@@ -1,9 +1,12 @@
 package jpabook.jpashop.domain.item;
 
+import jpabook.jpashop.domain.Category;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 // 상속관계 매핑인경우 상속관계 전략을 지정해야한다. 부모쪽에서 지정해야한다
@@ -21,4 +24,7 @@ public abstract class Item {
     private String name;
     private int price;
     private int stockQuantity;
+
+    @ManyToMany(mappedBy = "items")
+    private List<Category> categories = new ArrayList<>();
 }
