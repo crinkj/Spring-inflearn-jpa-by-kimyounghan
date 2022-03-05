@@ -9,6 +9,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
@@ -26,16 +27,22 @@ public class MemberRepositoryTest {
     @Rollback(false) // 테스트에서도 Rollback 원하지않는경우 false 지정
     public void testMember() throws Exception{
         //given
-           Member member = new Member();
-           member.setUsername("memberA");
+        Member member = new Member();
+        member.setUsername("memberA");
 
         //when
         Long saveId = memberRepository.save(member);
         Member findMember = memberRepository.find(saveId);
 
         //then
-        Assertions.assertThat(findMember.getId()).isEqualTo(member.getId());
-        Assertions.assertThat(findMember.getUsername()).isEqualTo(member.getUsername());
+        assertThat(findMember.getId()).isEqualTo(member.getId());
+        assertThat(findMember.getUsername()).isEqualTo(member.getUsername());
+
+        // JPA의 중요한 개념인 persist context(영속성)과 관련이 있다.
+        // 영속성 컨텍스트에 담겨서 같은 동일성을 보장한다.
+       assertThat(findMember).isEqualTo(member);
+
+
     }
     
 }
