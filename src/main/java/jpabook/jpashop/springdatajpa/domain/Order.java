@@ -1,4 +1,4 @@
-package jpabook.jpashop.domain;
+package jpabook.jpashop.springdatajpa.domain;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,17 +10,19 @@ import java.util.List;
 
 @Entity
 // @Table(name="${name}")을 명시안하면 그대로 클래스 이름으로 테이블이 생성된다
-@Table(name="Orders")
-@Getter @Setter
+@Table(name = "Orders")
+@Getter
+@Setter
 public class Order {
 
-    @Id @GeneratedValue
-    @Column(name="order_id")
+    @Id
+    @GeneratedValue
+    @Column(name = "order_id")
     private Long id;
 
     @ManyToOne
     // Mapping을 무엇으로 할껀지 정의하는 어노테이션
-    @JoinColumn(name="member_id")
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @OneToMany(mappedBy = "order")
@@ -33,6 +35,21 @@ public class Order {
     // 자바 8에서는 어노테이션 매핑을안해도 Hibernate가 알아서 LocalDateTime은 매핑해준다.
     private LocalDateTime orderDate;
 
+    @Enumerated(EnumType.STRING)
     private OrderStatus status; // 주문상태 [ORDER, CANCEL]
 
+    //==연관관계 메서드==//
+    public void setMember(Member member){
+        this.member = member;
+        member.getOrders().add(this);
+    }
+
+    public void addOrderItem(OrderItem orderItem){
+        orderItems.add(orderItem);
+    }
+
+    public void setDelivery(Delivery delivery){
+        this.delivery = delivery;
+        delivery.setOrder(this);
+    }
 }

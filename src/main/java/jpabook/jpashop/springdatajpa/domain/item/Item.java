@@ -1,6 +1,6 @@
-package jpabook.jpashop.domain.item;
+package jpabook.jpashop.springdatajpa.domain.item;
 
-import jpabook.jpashop.domain.Category;
+import jpabook.jpashop.springdatajpa.domain.Category;
 import lombok.Getter;
 import lombok.Setter;
 
