@@ -59,6 +59,12 @@ public class MemberRepositoryTest {
     @Rollback(false)
     public void fetchTest() throws Exception{
 
+        memberRepository.save(new Member2("member6",10, new Team("TeamA")));
+        memberRepository.save(new Member2("member7",10, new Team("TeamA")));
+        memberRepository.save(new Member2("member8",20, new Team("TeamB")));
+        memberRepository.save(new Member2("member9",20, new Team("TeamB")));
+        em.flush();
+        em.clear();
         // fetch join 을 사용해서 1쿼리만 불러온다
         memberRepository.findMemberFetchJoin();
 
