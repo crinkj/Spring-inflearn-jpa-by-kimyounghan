@@ -18,8 +18,8 @@ public class Team {
     private Long id;
     private String name;
 
-    @OneToMany(mappedBy = "team")
-    private List<Member> members = new ArrayList<>();
+    @OneToMany(mappedBy = "team",  cascade = CascadeType.ALL)
+    private List<Member2> members = new ArrayList<>();
 
     public Team(String name){
         this.name = name;

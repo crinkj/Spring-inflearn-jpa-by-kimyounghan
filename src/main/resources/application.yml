@@ -8,7 +8,7 @@ spring:
     jpa:
         hibernate:
     # ddl-auto:create ->  application 실행할때 내가 가진 entity를 토대로 테이블을 지우고 다시 생성하는 옵션이다.
-            ddl-auto: create
+            ddl-auto: none
         properties:
             hibernate:
     #system.out 을 출력한다. 운영 환경에서는 로그만 출력해야되서 밑에 로그 설정을 해야한다.

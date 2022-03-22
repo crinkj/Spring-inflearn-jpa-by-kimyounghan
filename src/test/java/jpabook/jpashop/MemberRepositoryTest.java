@@ -1,7 +1,8 @@
 package jpabook.jpashop;
 
-import jpabook.jpashop.springdatajpa.Member;
-import jpabook.jpashop.springdatajpa.MemberRepository;
+import jpabook.jpashop.springdatajpa.Member2;
+import jpabook.jpashop.springdatajpa.MemberRepository2;
+import jpabook.jpashop.springdatajpa.Team;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,8 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -17,7 +20,9 @@ import java.util.List;
 public class MemberRepositoryTest {
 
     @Autowired
-    MemberRepository memberRepository;
+    MemberRepository2 memberRepository;
+    @PersistenceContext
+    EntityManager em;
 
 
     // 멤버 객체를 반환하지않은 이유: CQS(command query separation) 커맨드와 커리를 분리하기 위해
@@ -31,20 +36,38 @@ public class MemberRepositoryTest {
     //          @transactional 없이 데이터 변경을 할경우 에러가난다
     @Test
     @Transactional  // 테스트에서는 진행한후 Rollback 시킨다
-    // @Rollback(false) // 테스트에서도 Rollback 원하지않는경우 false 지정
+    @Rollback(false) // 테스트에서도 Rollback 원하지않는경우 false 지정
     public void bulkTest() throws Exception{
-        memberRepository.save(new Member("member1",10));
-        memberRepository.save(new Member("member2",20));
-        memberRepository.save(new Member("member3",30));
-        memberRepository.save(new Member("member4",40));
+        memberRepository.save(new Member2("member1",10));
+        memberRepository.save(new Member2("member2",20));
+        memberRepository.save(new Member2("member3",30));
+        memberRepository.save(new Member2("member4",40));
+        memberRepository.save(new Member2("member5",50));
 
         memberRepository.bulkAgePlus(20);
+        em.flush();
 
-        List<Member> result = memberRepository.findByUsername("member5");
-        Member member5 = result.get(0);
+        List<Member2> result = memberRepository.findByUsername("member5");
+        Member2 member5 = result.get(0);
         System.out.println("member5 = " + member5);
 
 
     }
-    
+
+    @Test
+    @Transactional
+    @Rollback(false)
+    public void fetchTest() throws Exception{
+
+        // fetch join 을 사용해서 1쿼리만 불러온다
+        memberRepository.findMemberFetchJoin();
+
+        // N + 1 -> 한번 쿼리로 N개의 쿼리가 나간다.
+        List<Member2> members = memberRepository.findAll();
+        for(Member2 member: members){
+            System.out.println("member = " + member.getUsername());
+            System.out.println("member.teamClass = " + member.getTeam().getClass()); // proxy에 감싸서 가짜 객체를 가지고온다
+            System.out.println("member.team = " + member.getTeam().getName());
+        }
+    }
 }
