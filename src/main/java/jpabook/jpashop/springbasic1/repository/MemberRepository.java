@@ -1,6 +1,6 @@
-package jpabook.jpashop.springdatajpa.repository;
+package jpabook.jpashop.springbasic1.repository;
 
-import jpabook.jpashop.springdatajpa.domain.Member;
+import jpabook.jpashop.springbasic1.domain.Member;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

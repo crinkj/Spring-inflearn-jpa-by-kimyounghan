@@ -17,8 +17,8 @@ public class Member {
     private String username;
     private int age;
 
-    @ManyToOne
-    @JoinColumn("name=team_id")
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="team_id")
     private Team team;
 
     public Member(String username, int age, Team team){
@@ -26,6 +26,9 @@ public class Member {
         if(team != null){
             changeTeam(team);
         }
+    }
+
+    public Member(String member1, int age) {
     }
 
     // 연관관계를 변경할수있는 함수를 만들어줘야한다.

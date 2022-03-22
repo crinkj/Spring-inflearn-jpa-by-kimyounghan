@@ -1,4 +1,4 @@
-package jpabook.jpashop.springdatajpa.domain.item;
+package jpabook.jpashop.springbasic1.domain.item;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,15 +1,23 @@
 package jpabook.jpashop;
 
+import jpabook.jpashop.springdatajpa.Member;
+import jpabook.jpashop.springdatajpa.MemberRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class MemberRepositoryTest {
+
+    @Autowired
+    MemberRepository memberRepository;
 
 
     // 멤버 객체를 반환하지않은 이유: CQS(command query separation) 커맨드와 커리를 분리하기 위해
@@ -23,8 +31,19 @@ public class MemberRepositoryTest {
     //          @transactional 없이 데이터 변경을 할경우 에러가난다
     @Test
     @Transactional  // 테스트에서는 진행한후 Rollback 시킨다
-    @Rollback(false) // 테스트에서도 Rollback 원하지않는경우 false 지정
-    public void testMember() throws Exception{
+    // @Rollback(false) // 테스트에서도 Rollback 원하지않는경우 false 지정
+    public void bulkTest() throws Exception{
+        memberRepository.save(new Member("member1",10));
+        memberRepository.save(new Member("member2",20));
+        memberRepository.save(new Member("member3",30));
+        memberRepository.save(new Member("member4",40));
+
+        memberRepository.bulkAgePlus(20);
+
+        List<Member> result = memberRepository.findByUsername("member5");
+        Member member5 = result.get(0);
+        System.out.println("member5 = " + member5);
+
 
     }
     

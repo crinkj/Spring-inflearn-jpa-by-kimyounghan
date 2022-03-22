@@ -1,7 +1,7 @@
-package jpabook.jpashop.springdatajpa.service;
+package jpabook.jpashop.springbasic1.service;
 
-import jpabook.jpashop.springdatajpa.domain.Member;
-import jpabook.jpashop.springdatajpa.repository.MemberRepository;
+import jpabook.jpashop.springbasic1.domain.Member;
+import jpabook.jpashop.springbasic1.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
