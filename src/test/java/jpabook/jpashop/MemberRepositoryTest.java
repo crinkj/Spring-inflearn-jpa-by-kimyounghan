@@ -1,8 +1,7 @@
 package jpabook.jpashop;
 
-import jpabook.jpashop.springdatajpa.Member2;
-import jpabook.jpashop.springdatajpa.MemberRepository2;
-import jpabook.jpashop.springdatajpa.Team;
+import jpabook.jpashop.springdatajpa.entity.DataJpaMember;
+import jpabook.jpashop.springdatajpa.repository.DataJpaMemberRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,7 @@ import java.util.List;
 public class MemberRepositoryTest {
 
     @Autowired
-    MemberRepository2 memberRepository;
+    DataJpaMemberRepository memberRepository;
     @PersistenceContext
     EntityManager em;
 
@@ -38,17 +37,17 @@ public class MemberRepositoryTest {
     @Transactional  // 테스트에서는 진행한후 Rollback 시킨다
     @Rollback(false) // 테스트에서도 Rollback 원하지않는경우 false 지정
     public void bulkTest() throws Exception{
-        memberRepository.save(new Member2("member1",10));
-        memberRepository.save(new Member2("member2",20));
-        memberRepository.save(new Member2("member3",30));
-        memberRepository.save(new Member2("member4",40));
-        memberRepository.save(new Member2("member5",50));
+        memberRepository.save(new DataJpaMember("member1",10));
+        memberRepository.save(new DataJpaMember("member2",20));
+        memberRepository.save(new DataJpaMember("member3",30));
+        memberRepository.save(new DataJpaMember("member4",40));
+        memberRepository.save(new DataJpaMember("member5",50));
 
         memberRepository.bulkAgePlus(20);
         em.flush();
 
-        List<Member2> result = memberRepository.findByUsername("member5");
-        Member2 member5 = result.get(0);
+        List<DataJpaMember> result = memberRepository.findByUsername("member5");
+        DataJpaMember member5 = result.get(0);
         System.out.println("member5 = " + member5);
 
 
@@ -59,18 +58,14 @@ public class MemberRepositoryTest {
     @Rollback(false)
     public void fetchTest() throws Exception{
 
-        memberRepository.save(new Member2("member6",10, new Team("TeamA")));
-        memberRepository.save(new Member2("member7",10, new Team("TeamA")));
-        memberRepository.save(new Member2("member8",20, new Team("TeamB")));
-        memberRepository.save(new Member2("member9",20, new Team("TeamB")));
         em.flush();
         em.clear();
         // fetch join 을 사용해서 1쿼리만 불러온다
         memberRepository.findMemberFetchJoin();
 
         // N + 1 -> 한번 쿼리로 N개의 쿼리가 나간다.
-        List<Member2> members = memberRepository.findAll();
-        for(Member2 member: members){
+        List<DataJpaMember> members = memberRepository.findAll();
+        for(DataJpaMember member: members){
             System.out.println("member = " + member.getUsername());
             System.out.println("member.teamClass = " + member.getTeam().getClass()); // proxy에 감싸서 가짜 객체를 가지고온다
             System.out.println("member.team = " + member.getTeam().getName());

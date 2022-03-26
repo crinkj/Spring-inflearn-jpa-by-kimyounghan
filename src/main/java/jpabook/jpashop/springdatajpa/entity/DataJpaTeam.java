@@ -1,4 +1,4 @@
-package jpabook.jpashop.springdatajpa;
+package jpabook.jpashop.springdatajpa.entity;
 
 import lombok.*;
 
@@ -9,19 +9,18 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 @ToString(of = {"id", "name"})
-public class Team {
+public class DataJpaTeam {
 
     @Id @GeneratedValue
-    @Column(name="member_id")
     private Long id;
     private String name;
 
     @OneToMany(mappedBy = "team",  cascade = CascadeType.ALL)
-    private List<Member2> members = new ArrayList<>();
+    private List<DataJpaMember> members = new ArrayList<>();
 
-    public Team(String name){
+    public DataJpaTeam(String name){
         this.name = name;
     }
 }

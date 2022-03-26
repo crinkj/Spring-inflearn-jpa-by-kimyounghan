@@ -27,12 +27,12 @@ public class MemberRepository {
     //  SQL은 테이블을 대상으로 조회하는데
     //  JPQL경우 엔티티를 대상으로 조회한다
     public List<Member> findAll(){
-        return em.createQuery("select m from Member2 m",Member.class)
+        return em.createQuery("select m from DataJpaMember m",Member.class)
                 .getResultList();
     }
 
     public List<Member> findByName(String name){
-        return em.createQuery("select m from Member2  m where m.name = :name",Member.class)
+        return em.createQuery("select m from DataJpaMember  m where m.name = :name",Member.class)
                 .setParameter("name",name)
                 .getResultList();
     }
