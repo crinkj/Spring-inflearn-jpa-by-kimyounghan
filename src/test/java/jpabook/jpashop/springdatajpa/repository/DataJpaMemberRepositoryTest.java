@@ -5,6 +5,9 @@ import jpabook.jpashop.springdatajpa.entity.DataJpaTeam;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +33,7 @@ class DataJpaMemberRepositoryTest {
         dataJpaTeamRepository.save(new DataJpaTeam("TEAM_B"));
         dataJpaTeamRepository.save(new DataJpaTeam("TEAM_C"));
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 50; i++) {
             DataJpaMember dataJpaMember = new DataJpaMember();
             dataJpaMember.setUsername("member_" + i);
             dataJpaMember.setAge(i + 10);
@@ -46,7 +49,6 @@ class DataJpaMemberRepositoryTest {
             dataJpaMemberRepository.save(dataJpaMember);
         }
 
-        assertThat(10).isEqualTo(dataJpaMemberRepository.findAll().size());
     }
 
     @Test
@@ -68,6 +70,20 @@ class DataJpaMemberRepositoryTest {
 
         for(DataJpaMember dataJpaMember : dataJpaMemberList){
             System.out.println(dataJpaMember);
+        }
+    }
+
+    @Test
+    public void memberListPaging(){
+
+        // 원하는 데이터 값에따라 페이징 옵션을 정해서 JPA에 보내야한다.
+        PageRequest pageRequest = PageRequest.of(5,10, Sort.by(Sort.Direction.ASC, "age"));  // JPA는 페이징 0부터 시작
+
+        Page<DataJpaMember> dataJpaMemberList =  dataJpaMemberRepository.findByAgeForPaging(10,pageRequest);
+
+        for(DataJpaMember member:dataJpaMemberList){
+            System.out.println(member);
+            System.out.println(dataJpaMemberList.getTotalElements());
         }
     }
 }
