@@ -1,9 +1,11 @@
 package jpabook.jpashop.queryDSL.service;
 
 import com.querydsl.core.QueryResults;
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jpabook.jpashop.queryDSL.entity.QQueryDSLMemberEntity;
+import jpabook.jpashop.queryDSL.entity.QQueryDSLTeamEntity;
 import jpabook.jpashop.queryDSL.entity.QueryDSLMemberEntity;
 import jpabook.jpashop.queryDSL.entity.QueryDSLTeamEntity;
 import jpabook.jpashop.springbasic1.domain.Member;
@@ -23,6 +25,7 @@ import javax.persistence.EntityManager;
 import java.util.List;
 
 import static jpabook.jpashop.queryDSL.entity.QQueryDSLMemberEntity.queryDSLMemberEntity;
+import static jpabook.jpashop.queryDSL.entity.QQueryDSLTeamEntity.queryDSLTeamEntity;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -174,7 +177,7 @@ public class QueryDSLMemberServiceTest {
     }
 
     @Test
-    public void paging1(){
+    public void paging1() {
         List<QueryDSLMemberEntity> result = queryFactory
                 .selectFrom(queryDSLMemberEntity)
                 .orderBy(queryDSLMemberEntity.username.desc())
@@ -183,4 +186,55 @@ public class QueryDSLMemberServiceTest {
                 .fetch();
         System.out.println(result);
     }
+
+    /**
+     * 집합함수( sum, count, etc)
+     */
+    @Test
+    public void aggregation() {
+        // QueryDSL 에서 제공하는 tuple
+        List<Tuple> result = queryFactory
+                .select(queryDSLMemberEntity.count(),
+                        queryDSLMemberEntity.age.sum(),
+                        queryDSLMemberEntity.age.avg(),
+                        queryDSLMemberEntity.age.max(),
+                        queryDSLMemberEntity.age.min()
+                )
+                .from(queryDSLMemberEntity)
+                .fetch();
+
+        Tuple tuple = result.get(0);
+        assertThat(tuple.get(queryDSLMemberEntity.count())).isEqualTo(4);
+        assertThat(tuple.get(queryDSLMemberEntity.age.sum())).isEqualTo(100);
+        assertThat(tuple.get(queryDSLMemberEntity.age.avg())).isEqualTo(25);
+        assertThat(tuple.get(queryDSLMemberEntity.age.max())).isEqualTo(40);
+        assertThat(tuple.get(queryDSLMemberEntity.age.min())).isEqualTo(10);
+
+    }
+
+    /**
+     * 팀의 이름과 각 팀의 평균 연령을 구해라.
+     */
+    @Test
+    public void group() throws Exception{
+        List<Tuple> result = queryFactory
+                .select(queryDSLTeamEntity.name, queryDSLMemberEntity.age.avg())
+                .from(queryDSLMemberEntity)
+                .join(queryDSLMemberEntity.team, queryDSLTeamEntity)
+                .groupBy(queryDSLTeamEntity.name)
+                .fetch();
+
+        Tuple teamA = result.get(0);
+        Tuple teamB = result.get(1);
+
+        assertThat(teamA.get(queryDSLTeamEntity.name)).isEqualTo("teamA");
+        assertThat(teamA.get(queryDSLMemberEntity.age.avg())).isEqualTo(15);
+
+        assertThat(teamB.get(queryDSLTeamEntity.name)).isEqualTo("teamB");
+        assertThat(teamB.get(queryDSLMemberEntity.age.avg())).isEqualTo(35);
+
+
+
+    }
+
 }
