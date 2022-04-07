@@ -1,1 +1,5 @@
 rootProject.name = 'jpashop'
+include 'querydsl'
+include 'jpa1'
+include 'querydsl'
+

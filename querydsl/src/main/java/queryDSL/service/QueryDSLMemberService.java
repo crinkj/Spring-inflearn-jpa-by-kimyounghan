@@ -1,4 +1,4 @@
-package jpabook.jpashop.queryDSL.service;
+package queryDSL.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

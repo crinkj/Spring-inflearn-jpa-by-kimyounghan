@@ -1,4 +1,4 @@
-package jpabook.jpashop.queryDSL.repository;
+package queryDSL.repository;
 
 import jpabook.jpashop.springbasic1.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;

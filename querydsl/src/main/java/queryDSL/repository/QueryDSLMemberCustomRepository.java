@@ -1,4 +1,4 @@
-package jpabook.jpashop.queryDSL.repository;
+package queryDSL.repository;
 
 public interface QueryDSLMemberCustomRepository {
 }
