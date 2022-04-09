@@ -1,8 +1,4 @@
-package jpabook.jpashop.queryDSL.entity;
-
-import lombok.*;
-
-import javax.persistence.*;
+package queryDSL.entity;
 
 @Entity
 @Getter
