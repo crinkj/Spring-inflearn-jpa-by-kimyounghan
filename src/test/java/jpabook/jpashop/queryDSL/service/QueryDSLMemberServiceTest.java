@@ -2,6 +2,8 @@ package jpabook.jpashop.queryDSL.service;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jpabook.jpashop.queryDSL.entity.QQueryDSLMemberEntity;
@@ -291,5 +293,73 @@ public class QueryDSLMemberServiceTest {
     public void fetchJoinNo(){
         em.flush();
         em.clear();
+
+        QueryDSLMemberEntity member = queryFactory
+                .selectFrom(queryDSLMemberEntity)
+                .where(queryDSLMemberEntity.username.eq("member1"))
+                .fetchOne();
+    }
+
+    /**
+     * queryDSL subquery 사용법
+     * com.querydsl.jpa.JPAExpressions 사용
+     *
+     * 나이가 가장 많은 회원 조회
+     */
+
+    @Test
+    public void subQuery(){
+
+        QQueryDSLMemberEntity subQueryMember = new QQueryDSLMemberEntity("subQueryMember");
+        List<QueryDSLMemberEntity> result = queryFactory
+                .selectFrom(queryDSLMemberEntity)
+                .where(queryDSLMemberEntity.age.eq(
+                        JPAExpressions
+                                .select(subQueryMember.age.max())
+                                .from(subQueryMember)
+                ))
+                .fetch();
+
+        assertThat(result).extracting("age")
+                .containsExactly(40);
+    }
+
+
+    /**
+     * 단순한 case문
+     */
+
+    @Test
+    public void basicCase(){
+        List<String> result = queryFactory
+                .select(queryDSLMemberEntity.age
+                        .when(10).then("열살")
+                        .when(20).then("스무살")
+                        .otherwise("기타"))
+                .from(queryDSLMemberEntity)
+                .fetch();
+
+        for(String s : result){
+            System.out.println("s = " + s);
+        }
+    }
+
+    /**
+     *  복잡한 case문
+     */
+
+    @Test
+    public void complexCase(){
+        List<String> result = queryFactory
+                .select(new CaseBuilder()
+                        .when(queryDSLMemberEntity.age.between(0, 20)).then("0~20살")
+                        .when(queryDSLMemberEntity.age.between(21, 40)).then("20~40살")
+                        .otherwise("기타"))
+                .from(queryDSLMemberEntity)
+                .fetch();
+
+        for(String s: result){
+            System.out.println("s= " + s);
+        }
     }
 }
