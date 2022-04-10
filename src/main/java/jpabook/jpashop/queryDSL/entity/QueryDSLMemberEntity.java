@@ -1,11 +1,14 @@
-package queryDSL.entity;
+package jpabook.jpashop.queryDSL.entity;
+
+import lombok.*;
+
+import javax.persistence.*;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(of = {"id","username"}) // ToString에는 연관관계 필드 참조 안하는게 좋다. 순환참조 방지
-@Table(name = "QMember")
 public class QueryDSLMemberEntity {
 
     @Id
